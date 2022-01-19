@@ -1,0 +1,5 @@
+## Append samples you want in your CSV to this file as resources ##
+resources:
+- kubetempura_v1_reviewapp.yaml
+- kubetempura_v1_pr.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples

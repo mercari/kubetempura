@@ -1,0 +1,24 @@
+# permissions for end users to edit prs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pr-editor-role
+rules:
+- apiGroups:
+  - kubetempura.mercari.com
+  resources:
+  - prs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kubetempura.mercari.com
+  resources:
+  - prs/status
+  verbs:
+  - get

@@ -1,0 +1,28 @@
+domain: mercari.com
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: kubetempura
+repo: github.com/mercari/kubetempura
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: mercari.com
+  group: kubetempura
+  kind: ReviewApp
+  path: github.com/mercari/kubetempura/api/v1
+  version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: mercari.com
+  group: kubetempura
+  kind: PR
+  path: github.com/mercari/kubetempura/api/v1
+  version: v1
+version: "3"

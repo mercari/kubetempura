@@ -1,0 +1,12 @@
+apiVersion: kubetempura.mercari.com/v1
+kind: PR
+metadata:
+  name: pr-sample
+  namespace: default
+spec:
+  parentReviewApp: reviewapp-sample
+  prNumber: '111'
+  headCommitRef: 'b97738ff24a893820cdf9ff7eb033fb40fadc7d9'
+  envVars:
+    - name: envA
+      value: 'envA value'

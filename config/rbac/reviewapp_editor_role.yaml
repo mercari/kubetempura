@@ -1,0 +1,24 @@
+# permissions for end users to edit reviewapps.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: reviewapp-editor-role
+rules:
+- apiGroups:
+  - kubetempura.mercari.com
+  resources:
+  - reviewapps
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kubetempura.mercari.com
+  resources:
+  - reviewapps/status
+  verbs:
+  - get

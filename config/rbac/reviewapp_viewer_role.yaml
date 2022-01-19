@@ -1,0 +1,20 @@
+# permissions for end users to view reviewapps.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: reviewapp-viewer-role
+rules:
+- apiGroups:
+  - kubetempura.mercari.com
+  resources:
+  - reviewapps
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kubetempura.mercari.com
+  resources:
+  - reviewapps/status
+  verbs:
+  - get

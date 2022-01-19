@@ -1,0 +1,49 @@
+apiVersion: kubetempura.mercari.com/v1
+kind: ReviewApp
+metadata:
+  name: reviewapp-sample
+  namespace: default
+spec:
+  githubRepository: https://github.com/mercari/not-exists
+  resources:
+    - apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: reviewapp-sample-pr{{PR_NUMBER}}
+        namespace: default
+      spec:
+        selector:
+          matchLabels:
+            app: reviewapp-sample-pr{{PR_NUMBER}}
+        template:
+          metadata:
+            labels:
+              app: reviewapp-sample-pr{{PR_NUMBER}}
+          spec:
+            containers:
+              - name: echo
+                # image: ghcr.io/stefanprodan/podinfo:6.0.3
+                image: ghcr.io/stefanprodan/podinfo:pr{{PR_NUMBER}}-{{COMMIT_REF_SHORT}}
+                ports:
+                  - name: http
+                    containerPort: 9898
+                    protocol: TCP
+                command:
+                  - './podinfo'
+                  - '--port=9898'
+                  - '--level=info'
+                  - '--random-delay=false'
+                  - '--random-error=false'
+    - apiVersion: v1
+      kind: Service
+      metadata:
+        name: reviewapp-sample-pr{{PR_NUMBER}}
+        namespace: default
+      spec:
+        ports:
+          - name: http
+            port: 9898
+            protocol: TCP
+            targetPort: http
+        selector:
+          app: reviewapp-sample-pr{{PR_NUMBER}}
