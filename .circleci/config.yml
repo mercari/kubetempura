@@ -67,7 +67,7 @@ jobs:
                 exit 1
             fi
 
-            echo "${FIXME}" | docker login ghcr.io -u ${FIXME} --password-stdin
+            echo "${CR_PAT_GHCR}" | docker login ghcr.io -u yayugu --password-stdin
             DOCKER_BUILDKIT=1 docker build \
                 --progress plain \
                 -t $IMAGE_NAME:$VERSION .
