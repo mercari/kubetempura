@@ -1,0 +1,85 @@
+version: 2.1
+
+defaults: &defaults
+  working_directory: /home/circleci/kubetempura
+
+golang: &golang
+  <<: *defaults
+  docker:
+    - image: golang:1.16
+
+commands:
+  setup_golang:
+    steps:
+      - checkout
+      - run:
+          name: Make lock copy
+          command: |
+            cp go.mod go.mod.fix
+      - restore_cache:
+          keys:
+            - vendor-{{ checksum "go.mod.fix" }}
+      - run:
+          name: Install dependencies
+          command: |
+            echo "machine github.com login $GITHUB_TOKEN" > ~/.netrc
+            if [ ! -e vendor ]; then
+              go mod vendor
+            fi
+      - save_cache:
+          key: vendor-{{ checksum "go.mod.fix" }}
+          paths:
+            - vendor
+
+jobs:
+  test:
+    <<: *golang
+    steps:
+      - setup_golang
+      - run:
+          name: Test and collect coverages
+          # Limit test parallelism to 8 to prevent out-of-memory errors for services with many packages.
+          command: |
+            GOFLAGS=-p=8 make test
+
+  # This job using some techniques for faster build.
+  # see: https://dev.to/yayugu/quick-tips-for-the-faster-container-image-building-on-circleci-3j2j
+  docker:
+    <<: *defaults
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - run:
+          name: Submit server build task to container builder
+          command: |
+            set -eu
+
+            IMAGE_NAME=ghcr.io/mercari/kubetempura
+            if [ "${CIRCLE_BRANCH}" == "main" ] || [ "${CIRCLE_BRANCH}" == "master" ]; then
+                VERSION=${CIRCLE_BRANCH}-$(date +%Y%m%d)-${CIRCLE_BUILD_NUM}
+            elif [ -n "${CIRCLE_PULL_REQUEST}" ]; then
+                COMMIT_REF=$(git describe --always)
+                PR_NUMBER=$(basename ${CIRCLE_PULL_REQUEST})
+                VERSION=pr${PR_NUMBER}-${COMMIT_REF}
+            else
+                echo "Change was not pushed to a branch with pull request, will not build image for it"
+                exit 1
+            fi
+
+            echo "${CR_PAT_GHCR}" | docker login ghcr.io -u yayugu --password-stdin
+            DOCKER_BUILDKIT=1 docker build \
+                --progress plain \
+                -t $IMAGE_NAME:$VERSION .
+
+            docker push $IMAGE_NAME:$VERSION
+
+workflows:
+  build-and-test:
+    jobs:
+      - test
+      - docker:
+          filters:
+            branches:
+              only:
+                - master
