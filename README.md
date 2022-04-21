@@ -56,7 +56,7 @@ Also you need to register a DNS record. Such as `kubetempura.example.com`
 
 # SYNOPSIS
 
-After the installation, use can create a ReviewApp resource in each namespace. ReviewApp is a template for resources, which you want to create for each PR.
+After the installation, you can create a ReviewApp resource in each namespace. ReviewApp is a template for resources, which you want to create for each PR.
 
 the `resouces` is an array which allows any kind of Kubernetes resources include CRDs.
 
