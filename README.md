@@ -34,7 +34,7 @@ Then, you also need to register that secret as a Kubernetes Secret resource.
 
 ```bash
 $ kubectl create ns kubetempura-system
-$ kubectl create secret generic -n kubetempura-system github-webhook --from-literal=secret=$YOUR_SECRET
+$ kubectl create secret generic -n kubetempura-system github-webhooks --from-literal=secret=$YOUR_SECRET
 ```
 
 ## 2. Install CRDs and the controller to your cluster
