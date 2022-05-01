@@ -43,7 +43,7 @@ $ kubectl create secret generic -n kubetempura-system github-webhook --from-lite
 $ git clone git@github.com:mercari/kubetempura.git
 $ cd kubetempura
 
-$ vi config/crd/default/manager_auth_proxy_patch.yaml
+$ vi config/default/manager_auth_proxy_patch.yaml
 $ make install deploy
 ```
 
